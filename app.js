@@ -25,3 +25,5 @@ parser.on('data', (line)=>{
     console.log('Arduino dice: ' + line)
     port.write('Era una vez ')
 })
+
+//CONEXIÓN POST WITH AXIOS FROM NODE JS
