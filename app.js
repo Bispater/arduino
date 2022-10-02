@@ -1,16 +1,26 @@
+
 const { SerialPort } = require('serialport')
 const { ReadlineParser } = require('@serialport/parser-readline')
 const axios = require('axios');
 
+//Socket
+var net = require('net');
+var port = 8107; // PORT FOR CONNECTING WITH THE IP SERVER OF MINIX.
+var host = '192.168.100.7'; // IP FOR CONNECTING WITH THE IP SERVER OF MINIX.
 
-const port = new SerialPort({
-    path: '/dev/cu.usbmodem14101',
-    baudRate: 9600}
+
+const Arduinoport = new SerialPort({
+  /* PATH FROM MAC
+  path: '/dev/cu.usbmodem14101',
+  */
+  path: '/dev/cu.usbmodem14101',
+  baudRate: 9600}
 )
 
-const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
+const parser = Arduinoport.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 
 parser.on('data', (line)=>{
+  /* POST FOR HTML SERVER;
     axios.post('https://77dd-186-104-190-226.sa.ngrok.io/_tesscloud/organization/mwx41f4bgK/_tesscontrol/personal_notebook_control/new', {
         name_floor: 'Fred',
       },{headers: {
@@ -21,9 +31,67 @@ parser.on('data', (line)=>{
       })
       .catch(function (error) {
         console.log(error);
-      });
+      });*/
+      // local client name
+    console.log("=============================")
+    var Hobbits = getConnection("Hobbits");
+
+    // message
+    writeData(Hobbits,"Chevrolet Video");
+
+    /*
     console.log('Arduino dice: ' + line)
-    port.write('Era una vez ')
+    Arduinoport.write('Era una vez ')
+    */
 })
 
-//CONEXIÓN POST WITH AXIOS FROM NODE JS
+
+
+function getConnection(connName){
+	var client = net.connect({port,host},function(){
+		console.log(connName + ' Connected:');
+		console.log('  Local = %s:%s',this.localAddress,this.localPort);
+		console.log('  Remote = %s:%s',this.remoteAddress,this.remotePort);
+		this.setTimeout(500);
+		this.setEncoding('utf8');
+
+        //log with de data that we are sending
+		this.on('data',function(data){
+			console.log(data.toString());
+			this.end();
+		});
+        //connection end
+		this.on('end',function(){
+			console.log(connName + 'Client disconnected');
+		});
+        //error displayed on console log
+		this.on('error',function(err){
+			console.log('Socket Error: ',JSON.stringify(err));
+            console.log("=============================")
+
+		});
+        //socket isn't responding
+		this.on('timeout',function(){
+			console.log('Socket Timed Out');
+            console.log("=============================")
+
+		});
+        //socket closed
+		this.on('close',function(){
+			console.log('Socket Closed');
+            console.log("=============================")
+
+		});
+	});
+	return client;
+}
+function writeData(socket,data){
+	var success = !socket.write(data);
+	if(!success){
+		(function(socket,data){
+			socket.once('drain',function(){
+				writeData(socket,data);
+			});
+		})(socket,data);
+	}
+}
