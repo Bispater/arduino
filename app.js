@@ -10,7 +10,7 @@ const { close } = require('fs');
 var port = 8000; // PORT FOR CONNECTING WITH THE IP SERVER OF MINIX.
 //192.168.100.19
 // RINNO MINIX 192.168.8.101
-var host = '192.168.64.70'; // IP FOR CONNECTING WITH THE IP SERVER OF MINIX.
+var host = '192.168.8.101'; // IP FOR CONNECTING WITH THE IP SERVER OF MINIX.
 
 const Arduinoport = new SerialPort({
   /* 
