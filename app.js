@@ -17,9 +17,9 @@ const Arduinoport = new SerialPort({
   PATH FROM MAC
   path: '/dev/cu.usbmodem14101',
   PATH FROM RASPBERRY
-  path: '/dev/ttyACM0'
   */
-  path: '/dev/cu.usbmodem14101',
+  path: '/dev/ttyACM0',
+  //path: '/dev/cu.usbmodem14101',
   baudRate: 9600}
 )
 
