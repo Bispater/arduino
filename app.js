@@ -43,7 +43,7 @@ parser.on('data', async (line)=>{
       // local client name
   var s = require('net').Socket();
   s.connect(port, host);
-  s.write('test\n\n');
+  s.write('1\n\n');
   s.on('data', function(d){
     console.log(d.toString());
   });
