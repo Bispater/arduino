@@ -41,6 +41,7 @@ parser.on('data', async (line)=>{
         console.log(error);
       });*/
       // local client name
+  try{
   var s = require('net').Socket();
   s.connect(port, host);
   s.write('1\n\n');
@@ -48,6 +49,9 @@ parser.on('data', async (line)=>{
     console.log(d.toString());
   });
   s.end();
+  }catch(e){
+    console.log(e);
+  }
   /*
       console.log('Move!', line)
       var scan = Netcat.portscan();
