@@ -7,7 +7,7 @@ const { ReadlineParser } = require('@serialport/parser-readline')
 var net = require('net');
 const { close } = require('fs');
 var port = 8000;            // THE APP DEFINE THIS PORT. 
-var host = '192.168.8.104'; // IP FOR CONNECTING WITH THE (IP SERVER OF MINIX).
+var host = '192.168.0.103'; // IP FOR CONNECTING WITH THE (IP SERVER OF MINIX).
 
 const Arduinoport = new SerialPort({
   /* 
