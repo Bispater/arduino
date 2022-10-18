@@ -6,10 +6,12 @@ const schedule = require('node-schedule');
 //SOCKET: 
 var net = require('net');
 const { close } = require('fs');
+const { Console } = require('console');
 var port = 8000;            // THE APP DEFINE THIS PORT. 
 var host = '192.168.1.152'; // IP FOR CONNECTING WITH THE (IP SERVER OF MINIX).
 var arduinoPATH;
 var validation = true;
+
 
 SerialPort.list().then(
   (ports) => {
@@ -20,6 +22,8 @@ SerialPort.list().then(
         `${port.path}\t22${port.pnpId || ""}\t${port.manufacturer || ""}`
       );
       */
+      console.log("puertoo: ");
+      console.log(port);
       console.log("Nombre del puerto : " + port.path)
       try {
         //if ((port.path) || (validation)){
@@ -37,8 +41,6 @@ SerialPort.list().then(
   }
   ) 
 });
-
-
 
 function connectDevice() {
   const Arduinoport = new SerialPort({
