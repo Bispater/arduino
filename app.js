@@ -65,7 +65,8 @@ function connectDevice() {
       var s = require('net').Socket();
       s.connect(port, host);
       s.on('error', (err) => {
-        console.log("Error connecting to IP");
+        console.log("Error connecting to IP: ");
+        console.log(err)
       });
       console.log("conecting Auxiliar ")
       console.log("Connected to port: " + port);
