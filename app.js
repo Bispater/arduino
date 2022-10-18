@@ -7,73 +7,73 @@ const schedule = require('node-schedule');
 var net = require('net');
 const { close } = require('fs');
 const { Console } = require('console');
-var port = 8000;            // THE APP DEFINE THIS PORT. 
-var host = '192.168.1.152'; // IP FOR CONNECTING WITH THE (IP SERVER OF MINIX).
+var port = 8000;                        // THE APP DEFINE THIS PORT. 
+var host = '192.168.1.152';             // IP FOR CONNECTING WITH THE (IP SERVER OF MINIX).
 var arduinoPATH;
-var validation = true;
 
 
 SerialPort.list().then(
   (ports) => {
     ports.forEach((port, index) => {
-      /*
+      /* TESTING LOG
       console.log(
         "# :" + (index + 1) + ")",
-        `${port.path}\t22${port.pnpId || ""}\t${port.manufacturer || ""}`
-      );
-      */
-      console.log("puertoo: ");
-      console.log(port);
-      console.log("Nombre del puerto : " + port.path)
+        `${port.path}\t22${port.pnpId || ""}\t${""}`
+      );*/
       try {
-        //if ((port.path) || (validation)){
-        timerClock();
-        arduinoPATH = port.path;
-        console.log("Arduino PATH: " + port.path)
-        connectDevice();
-      //}  
-    }catch(e){
-      console.log(e)
-    } 
-  },
-  (err) => {
-    console.error("Error listing ports", err);
+        if (port.manufacturer != undefined) {
+          if (port.manufacturer.includes('Arduino')){
+            console.log("Device Arduino recognized...")
+            //timerClock();
+            arduinoPATH = port.path;
+            console.log("Arduino PATH: " + port.path)
+            connectDevice();
+          }
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+      (err) => {
+        console.error("Error listing ports", err);
+      }
+    )
   }
-  ) 
-});
+);
 
 function connectDevice() {
+
   const Arduinoport = new SerialPort({
-    /* 
-    PATH FROM MAC: path: '/dev/cu.usbmodem14101',
-    */
-  
-    //PATH FROM RASPBERRY:
-    //path: '/dev/ttyACM0',
     path: arduinoPATH,
-    baudRate: 9600}
-  )
+    baudRate: 9600
+  })
 
   const parser = Arduinoport.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-  parser.on('data', async (line)=>{
-  try{
-    var s = require('net').Socket();
-    s.connect(port, host);
-    console.log("Connected to " + port);
-    s.write('1\n\n');
-    s.on('data', function(d){
-      console.log(d.toString());
-    }); 
-    s.end();
-  }catch(e){
-    console.log(e);
-  }  
+
+  parser.on('data', async (line) => {
+    try {
+      var s = require('net').Socket();
+      s.connect(port, host);
+      s.on('error', (err) => {
+        console.log("Error connecting to IP");
+      });
+      console.log("conecting Auxiliar ")
+      console.log("Connected to port: " + port);
+      s.write('1\n\n');
+      console.log("Data sended : 1");
+      s.on('data', function (d) {s
+        console.log(d.toString());
+      });
+      s.end();
+    } catch (e) {
+      console.log("AQUI SE CAEE")
+      console.log(e);
+    }
   });
 }
 
-
-function timerClock(){
-  const job = schedule.scheduleJob('5 * * * * *', function(){
+function timerClock() {
+  const job = schedule.scheduleJob('5 * * * * *', function () {
     console.log('The answer to life, the universe, and everything!');
   });
 }
