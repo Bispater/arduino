@@ -9,22 +9,28 @@ const { close } = require('fs');
 var port = 8000;            // THE APP DEFINE THIS PORT. 
 var host = '192.168.1.152'; // IP FOR CONNECTING WITH THE (IP SERVER OF MINIX).
 var arduinoPATH;
+var validation = true;
 
 SerialPort.list().then(
   (ports) => {
     ports.forEach((port, index) => {
+      /*
       console.log(
         "# :" + (index + 1) + ")",
         `${port.path}\t22${port.pnpId || ""}\t${port.manufacturer || ""}`
       );
-      console.log("Nombre del puerto : " + port.manufacturer)
-      if (port.manufacturer.includes('Arduino')){
+      */
+      console.log("Nombre del puerto : " + port.path)
+      try {
+        //if ((port.path) || (validation)){
         timerClock();
         arduinoPATH = port.path;
         console.log("Arduino PATH: " + port.path)
         connectDevice();
-        
-      }      
+      //}  
+    }catch(e){
+      console.log(e)
+    } 
   },
   (err) => {
     console.error("Error listing ports", err);
