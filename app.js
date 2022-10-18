@@ -77,7 +77,6 @@ function connectDevice() {
       });
       s.end();
     } catch (e) {
-      console.log("AQUI SE CAEE")
       console.log(e);
     }
   });
