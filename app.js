@@ -11,35 +11,45 @@ var port = 8000;                        // THE APP DEFINE THIS PORT.
 var host = '192.168.1.152';             // IP FOR CONNECTING WITH THE (IP SERVER OF MINIX).
 var arduinoPATH;
 
+connectSerialPort();
 
-SerialPort.list().then(
-  (ports) => {
-    ports.forEach((port, index) => {
-      /* TESTING LOG
-      console.log(
-        "# :" + (index + 1) + ")",
-        `${port.path}\t22${port.pnpId || ""}\t${""}`
-      );*/
-      try {
-        if (port.manufacturer != undefined) {
-          if (port.manufacturer.includes('Arduino')){
-            console.log("Device Arduino recognized...")
-            //timerClock();
-            arduinoPATH = port.path;
-            console.log("Arduino PATH: " + port.path)
-            connectDevice();
+function connectSerialPort () {
+  SerialPort.list().then(
+    (ports) => {
+      ports.forEach((port, index) => {
+        /* TESTING LOG
+        console.log(
+          "# :" + (index + 1) + ")",
+          `${port.path}\t22${port.pnpId || ""}\t${""}`
+        );*/
+        try {
+          if (port.manufacturer != undefined) {
+            if (port.manufacturer.includes('Arduino')){
+              console.log("Device Arduino recognized...")
+              //timerClock();
+              arduinoPATH = port.path;
+              console.log("Arduino PATH: " + port.path)
+              connectDevice();
+            }
           }
+        } catch (e) {
+          console.log(e)
         }
-      } catch (e) {
-        console.log(e)
+      },
+        (err) => {
+          console.error("Error listing ports", err);
+        }
+      )
+      if (arduinoPATH == undefined){
+        console.log("Didn't found a device.")
+        setTimeout(()=>{
+          console.log("Trying again...")
+          connectSerialPort();
+        }, 10000)
       }
-    },
-      (err) => {
-        console.error("Error listing ports", err);
-      }
-    )
-  }
-);
+    }
+  );
+}
 
 function connectDevice() {
 
@@ -77,3 +87,4 @@ function timerClock() {
     console.log('The answer to life, the universe, and everything!');
   });
 }
+
